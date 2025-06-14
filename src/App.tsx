@@ -425,7 +425,7 @@ function App() {
                   <textarea
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Ejemplo: Usuario visitó 30 páginas en enero durante fin de semana con 120 segundos de interacción..."
+                    placeholder="Ejemplo: Dime si un cliente va a comprar teniendo en cuenta que el usuario visitó la página en enero durante un fin de semana y visitó 30 paginas de productos relacionados con 120 segundos de interacción."
                     rows={3}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
                   />
@@ -470,10 +470,10 @@ function App() {
                 <h4 className="text-sm font-semibold text-slate-800 mb-2">Ejemplos rápidos:</h4>
                 <div className="space-y-1">
                   {[
-                    "Usuario Firefox, octubre, 5 páginas, 60 segundos",
-                    "Cliente enero, Chrome, Linux, 1 página, 5 segundos",
-                    "Visitante fin de semana, 10 páginas admin, 10 segundos"
-                  ].map((example, index) => (
+                    "Dime si un cliente va a comprar. Tiene los siguientes datos: el visitante entró en octubre, utiliza el navegador Firefox y el sistema operativo Windows. Además, visitó 5 páginas informativas con una duración de 60 segundos.",
+                  "Dime si un cliente va a comprar. Este tiene los siguientes datos: el usuario visitó la página en octubre, en un fin de semana; accedió a 5 páginas informativas, 10 páginas administrativas, y duró 10 segundos en cada una de ellas.",
+                  "Dime si un cliente con las siguiente características va a comprar: el visitante entró en enero, utiliza el navegador Chrome y el sistema operativo Linux. Además, visitó 1 páginas informativas con una duración de 5 segundos."
+                ].map((example, index) => (
                     <button
                       key={index}
                       onClick={() => setChatInput(example)}
