@@ -1,12 +1,12 @@
- {/* ESTE SI ES */}
 import React, { useState } from 'react';
-import { BarChart3, Bot, ChevronDown, Send, Loader2, TrendingUp, Users, ShoppingCart, Target, Brain, Zap, AlertTriangle } from 'lucide-react';
+import { BarChart3, Bot, ChevronDown, Send, Loader2, TrendingUp, Users, ShoppingCart, Target, Brain, Zap, AlertTriangle, X, MessageCircle } from 'lucide-react';
 
 function App() {
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [prediction, setPrediction] = useState('');
   const [showPrediction, setShowPrediction] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,9 +16,9 @@ function App() {
     setShowPrediction(false);
 
     const payload = {
-    mensaje: chatInput.trim()
-  };
-       console.log("📤 Enviando al backend:", payload);
+      mensaje: chatInput.trim()
+    };
+    console.log("📤 Enviando al backend:", payload);
     
     try {
       const response = await fetch('https://api-backend-proyecto-final-especializacion-951527847571.us-central1.run.app/conversar', {
@@ -27,7 +27,6 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload)
-
       });
       
       if (!response.ok) {
@@ -59,6 +58,14 @@ function App() {
 
   const scrollToSection = (sectionId: string) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const toggleChatbot = () => {
+    setIsChatbotOpen(!isChatbotOpen);
+  };
+
+  const closeChatbot = () => {
+    setIsChatbotOpen(false);
   };
 
   const clusters = [
@@ -140,9 +147,9 @@ function App() {
   ];
 
   return (
-     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-slate-200/50 z-50 shadow-sm">
+      <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-slate-200/50 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
@@ -161,12 +168,6 @@ function App() {
                 className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
               >
                 Análisis de Clústeres
-              </button>
-              <button 
-                onClick={() => scrollToSection('chatbot')}
-                className="text-slate-600 hover:text-blue-600 transition-colors font-medium"
-              >
-                Predicción IA
               </button>
             </nav>
           </div>
@@ -371,97 +372,6 @@ function App() {
         </div>
       </section>
 
-      {/* Chatbot Section */}
-      <section id="chatbot" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-700 px-6 py-3 rounded-full mb-6 font-medium">
-              <Bot className="h-5 w-5" />
-              <span>IA Predictiva</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6">
-              Chatbot Predictivo
-            </h2>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              Describe el comportamiento de un usuario y obtén predicciones instantáneas 
-              sobre la probabilidad de compra usando algoritmos de Machine Learning
-            </p>
-          </div>
-
-          <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-200">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="description" className="block text-sm font-semibold text-slate-700 mb-3">
-                  Describe el comportamiento del usuario:
-                </label>
-                <textarea
-                  id="description"
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Ejemplo: Dime si un cliente va a comprar teniendo en cuenta que el usuario visitó la página en enero durante un fin de semana y visitó 30 paginas de productos relacionados con 120 segundos de interacción."
-                  rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading || !chatInput.trim()}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-400 disabled:to-slate-500 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 disabled:cursor-not-allowed shadow-lg"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    <span>Analizando...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-5 w-5" />
-                    <span>Obtener Predicción</span>
-                  </>
-                )}
-              </button>
-            </form>
-
-            {/* Prediction Result */}
-            {showPrediction && (
-              <div className="mt-8 p-6 bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200 rounded-2xl animate-fade-in shadow-lg">
-                <div className="flex items-start space-x-3">
-                  <Bot className="h-6 w-6 text-emerald-600 mt-1 flex-shrink-0" />
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Resultado del Análisis</h3>
-                    <pre className="text-slate-700 whitespace-pre-wrap leading-relaxed font-medium">
-                      {prediction}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Example Queries */}
-            <div className="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4">Ejemplos de consultas:</h3>
-              <div className="space-y-2">
-                {[
-                  "Dime si un cliente va a comprar. Tiene los siguientes datos: el visitante entró en octubre, utiliza el navegador Firefox y el sistema operativo Windows. Además, visitó 5 páginas informativas con una duración de 60 segundos.",
-                  "Dime si un cliente va a comprar. Este tiene los siguientes datos: el usuario visitó la página en octubre, en un fin de semana; accedió a 5 páginas informativas, 10 páginas administrativas, y duró 10 segundos en cada una de ellas.",
-                  "Dime si un cliente con las siguiente características va a comprar: el visitante entró en enero, utiliza el navegador Chrome y el sistema operativo Linux. Además, visitó 1 páginas informativas con una duración de 5 segundos."
-                ].map((example, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setChatInput(example)}
-                    className="block w-full text-left p-3 bg-white hover:bg-blue-50 rounded-lg text-slate-600 hover:text-blue-700 transition-colors text-sm border border-slate-200 hover:border-blue-200"
-                  >
-                    "{example}"
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        
-      </section>
-
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto text-center">
@@ -473,18 +383,126 @@ function App() {
             Basado en el dataset UCI "Online Shoppers Purchasing Intention" • 
             Desarrollado con React + Machine Learning
           </p>
-
         </div>
       </footer>
-      
+
+      {/* Floating Chatbot Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {!isChatbotOpen && (
+          <button
+            onClick={toggleChatbot}
+            className="bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 animate-pulse"
+          >
+            <MessageCircle className="h-6 w-6" />
+          </button>
+        )}
+
+        {/* Floating Chatbot Panel */}
+        {isChatbotOpen && (
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-96 max-w-[calc(100vw-2rem)] max-h-[80vh] overflow-hidden animate-slide-up">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-emerald-500 to-blue-600 p-4 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Bot className="h-5 w-5 text-white" />
+                <span className="text-white font-semibold">Predicción IA</span>
+              </div>
+              <button
+                onClick={closeChatbot}
+                className="text-white hover:bg-white/20 p-1 rounded-full transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 max-h-96 overflow-y-auto">
+              <p className="text-slate-600 mb-4 text-sm">
+                Describe el comportamiento de un usuario y obtén predicciones instantáneas sobre la probabilidad de compra.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <textarea
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder="Ejemplo: Usuario visitó 30 páginas en enero durante fin de semana con 120 segundos de interacción..."
+                    rows={3}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading || !chatInput.trim()}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 disabled:from-slate-400 disabled:to-slate-500 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center space-x-2 disabled:cursor-not-allowed text-sm"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Analizando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      <span>Obtener Predicción</span>
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Prediction Result */}
+              {showPrediction && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <Bot className="h-4 w-4 text-emerald-600 mt-1 flex-shrink-0" />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-slate-800 mb-1">Resultado del Análisis</h4>
+                      <pre className="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">
+                        {prediction}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Examples */}
+              <div className="mt-4">
+                <h4 className="text-sm font-semibold text-slate-800 mb-2">Ejemplos rápidos:</h4>
+                <div className="space-y-1">
+                  {[
+                    "Usuario Firefox, octubre, 5 páginas, 60 segundos",
+                    "Cliente enero, Chrome, Linux, 1 página, 5 segundos",
+                    "Visitante fin de semana, 10 páginas admin, 10 segundos"
+                  ].map((example, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setChatInput(example)}
+                      className="block w-full text-left p-2 bg-slate-50 hover:bg-emerald-50 rounded text-xs text-slate-600 hover:text-emerald-700 transition-colors border border-slate-200 hover:border-emerald-200"
+                    >
+                      "{example}"
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
              
       <style jsx>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes slide-up {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
         .animate-fade-in {
           animation: fade-in 0.5s ease-out;
+        }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
         }
       `}</style>
     </div>
